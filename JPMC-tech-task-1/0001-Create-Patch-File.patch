@@ -1,0 +1,144 @@
+From 1752bc341267df8af4fddea7c483260be8d91432 Mon Sep 17 00:00:00 2001
+From: Concepcion Barajas <cbarajas@wesleyan.edu>
+Date: Mon, 20 Sep 2021 21:30:04 -0500
+Subject: [PATCH] Create Patch File
+
+---
+ client.py      |  14 +++++++++-----
+ client.pyc     | Bin 0 -> 1392 bytes
+ client_test.py |  36 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 5 deletions(-)
+ create mode 100644 client.pyc
+
+diff --git a/client.py b/client.py
+index 40badcd..466744c 100644
+--- a/client.py
++++ b/client.py
+@@ -35,16 +35,18 @@ def getDataPoint(quote):
+ 	stock = quote['stock']
+ 	bid_price = float(quote['top_bid']['price'])
+ 	ask_price = float(quote['top_ask']['price'])
+-	price = bid_price
++	price = (bid_price + ask_price)/2
+ 	return stock, bid_price, ask_price, price
+ 
+-def getRatio(price_a, price_b):
++def getRatio(price_a, price_b): 
+ 	""" Get ratio of price_a and price_b """
+ 	""" ------------- Update this function ------------- """
+ 	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++	if (price_b == 0):
++                return
++	return price_a/price_b
+ 
+-# Main
++# Main #CHANGE
+ if __name__ == "__main__":
+ 
+ 	# Query the price once every N seconds.
+@@ -52,8 +54,10 @@ if __name__ == "__main__":
+ 		quotes = json.loads(urllib2.urlopen(QUERY.format(random.random())).read())
+ 
+ 		""" ----------- Update to get the ratio --------------- """
++		prices = {}
+ 		for quote in quotes:
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
++			prices[stock] = price
+ 			print "Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price)
+ 
+-		print "Ratio %s" % getRatio(price, price)
++		print "Ratio %s" % getRatio(price["ABC"], price["DEF"])
+diff --git a/client.pyc b/client.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..e55fe26b4e1627e392aea57284e260863bef0669
+GIT binary patch
+literal 1392
+zcmb_bUvC>l5dYnuxUuWBX%d(EZ9%HIN(8rkszM8tBovT{Qb$$Q6X>+Qoh0X+@0{B;
+zN`><jz6BqE7d{PN1>Rw1V;96L+}+O3&d&UHX7+c{?`xgko`0=#ES?)Yf6l|M1%Tl%
+zKnbMp^Z;qFw1-H;r5+)TVAvAFu)YEl<0lSm!K`@Y251$gg|iS%JGl52)CR5KD!|_N
+zKO^mcLX2;MfN>WTW4s26Fph8qapG@$YoVvNQ84s6F7`pUIsO^aJD?Wmj`)2SBi%r{
+ziF6BT55(U(Xai3T=dc0V1Z|1+IL6%<U!DJg*Jc&Odp(#o`Z9IUzY6{C30_ye3rERK
+zZcFheKL_@GR!^Oq?hFQHo$K<nwr=Oi!zT|1=QC>FepZ-gKVBApa0_!DSm6=#*yUjl
+zS<F3T|1yBPUWDj#+xndSWw^A(f7>F=L(C(*$Ia|r#+U~S!#tKUj*^xj@32sZO>Jg5
+zDP5MTK349OR7GUSs2_AWBdc7kPN<?rJ9bh=J3Xz7$|)yVT36?1PDtSDX*Md1w@#ZP
+zr*~Fu&x(*e5-H8^AD6XuiNyQm`K)#{<P}_-1*2rw2(sen>($U>h*u)Qe!^n#%2Hzo
+zd0pi+&5ODk=|+#W9qf@k<BSI19DcjI?I=Ipb_}%rXpol$Rqo^ITi50I6LNc8(4j9#
+zKsziDb%HH^Zw0v=xg7p7?y-TJ$t)LMt_y>Y_;T3PJ4zznv>&igFUTowSW!z$eJz<*
+zx-tuWq?nJufiEPH1AMa<j{nd{*B;{hpX*&^5UzJ9X+01?;Q-=p5C=~7vTUM@D$DGL
+zym%>BV$^-Bv{MP+$j*KHk>VEm*(b`{11o_ZkzJkC|NM(xKkw~-ncU^IFJ{)1Wifi}
+zgww8=kXOdGuAJo1aAWF;XTr-@`@=U*cyciG(DDy0va9rjvdl+Za0r(oewmMBJ{h|_
+zs-E%<3-EE>OtkZdHKdKVd9GQn`YP;DXz0l|l$fD#`Cn8^*!2JO|LKH(wvs;W37}%p
+b4g4FmqE^`EryFes+fgf63+@G-pdbDPeR(TS
+
+literal 0
+HcmV?d00001
+
+diff --git a/client_test.py b/client_test.py
+index a608a01..fdab279 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -1,5 +1,6 @@
+ import unittest
+ from client import getDataPoint
++from client import getRatio
+ 
+ class ClientTest(unittest.TestCase):
+   def test_getDataPoint_calculatePrice(self):
+@@ -8,6 +9,8 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote),(quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+@@ -15,11 +18,44 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote),(quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+ 
+ 
+   """ ------------ Add more unit tests ------------ """
+ 
++  def test_getRatio(self):
++    quotes = [
++      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
++      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
++    ]
++
++    for quote in quotes:
++      self.assertEqual(getRatio(float(quote['top_bid']['price']), float(quote['top_ask']['price'])), float(quote['top_bid']['price'])/ float(quote['top_ask']['price']))
++  def test_getRatio_PriceBidGreaterThanAsk(self):
++    quotes = [
++      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
++      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
++    ]
++    for quote in quotes:
++      self.assertEqual(getRatio(float(quote['top_bid']['price']), float(quote['top_ask']['price'])), float(quote['top_bid']['price'])/ float(quote['top_ask']['price']))
++
++  def test_getRatio_BidZero(self):
++    quotes = [
++      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 0, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
++    ]
++    for quote in quotes:
++      self.assertEqual(getRatio(float(quote['top_bid']['price']), float(quote['top_ask']['price'])), 0)
++ 
++  def test_getRatio_AskZero(self):
++    quotes = [
++      {'top_ask': {'price': 0, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 12.2, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
++    ]
++    for quote in quotes:
++      self.assertEqual(getRatio(float(quote['top_bid']['price']), float(quote['top_ask']['price'])), None)
++
+ 
++  
+ 
+ if __name__ == '__main__':
+     unittest.main()
+-- 
+2.30.1
+
