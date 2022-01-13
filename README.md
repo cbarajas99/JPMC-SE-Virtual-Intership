@@ -1,2 +1,2 @@
 # JPMC-SE-Virtual-Intership
-This is the work I did for the Chase's Software Engineering Virtual Internship through Forage. They gave us tasks to show us what working at Chase would be like.
+This is the work I did for the Chase's Software Engineering Virtual Internship through Forage. They gave us tasks to show us what working at Chase would be like. I struggled a lot with the last two task with the logistics of getting everything set up in my terminal. The code I had was done correctly, but the set up with the terminal was giving me too many errors and was not producing any results.
